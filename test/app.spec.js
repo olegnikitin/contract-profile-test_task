@@ -16,7 +16,11 @@ describe('App', function () {
     })
 
     it('should return profile', async function () {
-        const result = await axios.get('http://localhost:3001/contracts/1');
+        const result = await axios.get('http://localhost:3001/contracts/1', {
+            headers: {
+                'profile_id': 1,
+            }
+        });
 
         assert.deepStrictEqual(result.data.id, 1);
     });
