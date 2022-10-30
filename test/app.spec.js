@@ -34,4 +34,14 @@ describe('App', function () {
 
         assert.deepStrictEqual(result.data[0].status, 'in_progress');
     });
+
+    it('should return all contract of the current user', async function () {
+        const result = await axios.get('http://localhost:3001/jobs/unpaid', {
+            headers: {
+                'profile_id': 1,
+            }
+        });
+
+        assert.deepStrictEqual(result.data?.length, 2);
+    });
 });

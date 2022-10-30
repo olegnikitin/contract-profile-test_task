@@ -21,4 +21,26 @@ app.get('/contracts',getProfile ,async (req, res) =>{
     const contracts = await Contract.findAll({where: {ClientId: req.profile.id, status: {[Op.not]: 'terminated'}}})
     res.json(contracts)
 })
+
+app.get('/jobs/unpaid',getProfile ,async (req, res) =>{
+    const { Job, Contract } = req.app.get("models");
+    const jobs = await Job.findAll({
+        include: [{
+            model: Contract,
+            required: true,
+            where: {
+                [Op.or]: [
+                    { ContractorId: req.profile.id },
+                    { ClientId: req.profile.id }
+                ],
+                status: "in_progress"
+            }
+        }],
+        where: {
+            paid: true
+        }
+    });
+    return res.status(200).json(jobs);
+})
+
 module.exports = app;
