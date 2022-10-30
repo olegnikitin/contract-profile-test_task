@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const {sequelize} = require('./model')
+const { Op } = require("sequelize")
 const {getProfile} = require('./middleware/getProfile')
 const app = express();
 app.use(bodyParser.json());
@@ -13,5 +14,11 @@ app.get('/contracts/:id',getProfile ,async (req, res) =>{
     const contract = await Contract.findOne({where: {id, ClientId: req.profile.id}})
     if(!contract) return res.status(404).end()
     res.json(contract)
+})
+
+app.get('/contracts',getProfile ,async (req, res) =>{
+    const {Contract} = req.app.get('models')
+    const contracts = await Contract.findAll({where: {ClientId: req.profile.id, status: {[Op.not]: 'terminated'}}})
+    res.json(contracts)
 })
 module.exports = app;

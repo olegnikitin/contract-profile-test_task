@@ -15,7 +15,7 @@ describe('App', function () {
         server.close();
     })
 
-    it('should return profile', async function () {
+    it('should return contract with 1 id that belongs to the current user', async function () {
         const result = await axios.get('http://localhost:3001/contracts/1', {
             headers: {
                 'profile_id': 1,
@@ -23,5 +23,15 @@ describe('App', function () {
         });
 
         assert.deepStrictEqual(result.data.id, 1);
+    });
+
+    it('should return all contract of the current user', async function () {
+        const result = await axios.get('http://localhost:3001/contracts', {
+            headers: {
+                'profile_id': 1,
+            }
+        });
+
+        assert.deepStrictEqual(result.data[0].status, 'in_progress');
     });
 });
